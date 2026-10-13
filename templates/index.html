@@ -1,33 +1,816 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Heart Disease Prediction</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>HeartCare | Heart Disease Prediction</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #07111f;
+            --card: rgba(17, 32, 52, 0.92);
+            --primary: #22d3ee;
+            --secondary: #818cf8;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.18);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 35px 18px 25px;
+            position: relative;
+        }
+
+        /* Animated background */
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            filter: blur(110px);
+            opacity: 0.20;
+            z-index: -1;
+            pointer-events: none;
+            animation: float 10s ease-in-out infinite alternate;
+        }
+
+        body::before {
+            background: #0891b2;
+            top: -150px;
+            left: -120px;
+        }
+
+        body::after {
+            background: #6366f1;
+            right: -150px;
+            bottom: -150px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            from {
+                transform: translate(0, 0);
+            }
+            to {
+                transform: translate(45px, 35px);
+            }
+        }
+
+        /* Navigation */
+
+        .navbar {
+            max-width: 1100px;
+            margin: 0 auto 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            animation: slideDown 0.8s ease;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+        }
+
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #06b6d4, #6366f1);
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.2);
+            font-size: 25px;
+            animation: heartbeat 2s infinite;
+        }
+
+        .brand span {
+            color: var(--primary);
+        }
+
+        .secure-badge {
+            color: #a5f3fc;
+            background: rgba(34, 211, 238, 0.08);
+            border: 1px solid rgba(34, 211, 238, 0.25);
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Hero section */
+
+        .hero {
+            text-align: center;
+            max-width: 760px;
+            margin: 0 auto 35px;
+            animation: fadeUp 0.9s ease both;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 9px 15px;
+            color: var(--primary);
+            background: rgba(15, 35, 53, 0.65);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #34d399;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #34d399;
+            animation: blink 1.5s infinite;
+        }
+
+        h1 {
+            font-size: clamp(34px, 5vw, 54px);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -2px;
+            margin-bottom: 18px;
+        }
+
+        h1 span {
+            background: linear-gradient(90deg, #22d3ee, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            color: var(--muted);
+            line-height: 1.8;
+            font-size: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ECG decoration */
+
+        .ecg {
+            height: 48px;
+            width: min(340px, 80%);
+            margin: 18px auto 0;
+            opacity: 0.8;
+        }
+
+        .ecg svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .ecg path {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            animation: ecgDraw 3s linear infinite;
+            filter: drop-shadow(0 0 5px #22d3ee);
+        }
+
+        /* Main form card */
+
+        .main-card {
+            width: min(100%, 900px);
+            margin: 0 auto;
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.28);
+            overflow: hidden;
+            animation: fadeUp 1s 0.15s ease both;
+        }
+
+        .card-header {
+            padding: 27px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .card-header h2 {
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .card-header p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .step-label {
+            color: #c4b5fd;
+            background: rgba(129, 140, 248, 0.12);
+            border: 1px solid rgba(129, 140, 248, 0.22);
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        form {
+            padding: 30px 32px 32px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 23px;
+        }
+
+        .section-title span {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: rgba(34, 211, 238, 0.1);
+            font-size: 16px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 23px 20px;
+        }
+
+        .field {
+            min-width: 0;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+        }
+
+        .field label small {
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .field input,
+        .field select {
+            display: block;
+            width: 100%;
+            min-width: 0;
+            height: 49px;
+            padding: 0 13px;
+            color: #f1f5f9;
+            background: #0b1728;
+            border: 1px solid #26374d;
+            border-radius: 11px;
+            font: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s,
+                        transform 0.25s, background 0.25s;
+        }
+
+        .field select {
+            cursor: pointer;
+        }
+
+        .field select option {
+            background: #0b1728;
+            color: #f1f5f9;
+        }
+
+        .field input:hover,
+        .field select:hover {
+            border-color: #475569;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--primary);
+            background: #102034;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .field input::placeholder {
+            color: #64748b;
+        }
+
+        .form-divider {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 32px 0 27px;
+        }
+
+        /* Predict button */
+
+        .submit-btn {
+            width: 100%;
+            min-height: 55px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            color: #06111f;
+            background: linear-gradient(100deg, #22d3ee, #818cf8);
+            border: none;
+            border-radius: 13px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.25s, box-shadow 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                110deg,
+                transparent 25%,
+                rgba(255,255,255,0.4) 50%,
+                transparent 75%
+            );
+            transform: translateX(-100%);
+            transition: transform 0.7s;
+        }
+
+        .submit-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(34, 211, 238, 0.23);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.99);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        /* Prediction result */
+
+        .result {
+            margin: 0 32px 30px;
+            padding: 23px;
+            border-radius: 16px;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            background: rgba(34, 211, 238, 0.07);
+            animation: resultReveal 0.7s ease both;
+        }
+
+        .result h3 {
+            font-size: 17px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .result-heading {
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .disclaimer {
+            width: min(100%, 900px);
+            margin: 22px auto 0;
+            text-align: center;
+            color: #8494a9;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 35px;
+            color: #64748b;
+            font-size: 11px;
+            letter-spacing: 0.4px;
+        }
+
+        /* Animations */
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.06); }
+            20%, 40% { transform: scale(1); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.35; }
+        }
+
+        @keyframes ecgDraw {
+            0% { stroke-dashoffset: 500; }
+            70%, 100% { stroke-dashoffset: 0; }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes resultReveal {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Mobile responsive design */
+
+        @media (max-width: 700px) {
+            body {
+                padding: 22px 12px;
+            }
+
+            .navbar {
+                margin-bottom: 35px;
+            }
+
+            .brand {
+                font-size: 18px;
+            }
+
+            .brand-icon {
+                width: 39px;
+                height: 39px;
+            }
+
+            .secure-badge {
+                font-size: 10px;
+                padding: 8px 10px;
+            }
+
+            .hero {
+                margin-bottom: 28px;
+            }
+
+            h1 {
+                letter-spacing: -1.2px;
+            }
+
+            .hero p {
+                font-size: 13px;
+            }
+
+            .main-card {
+                border-radius: 19px;
+            }
+
+            .card-header {
+                padding: 22px 20px;
+            }
+
+            form {
+                padding: 25px 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 21px 13px;
+            }
+
+            .field input,
+            .field select {
+                font-size: 12px;
+                padding: 0 9px;
+            }
+
+            .result {
+                margin: 0 20px 24px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .secure-badge {
+                display: none;
+            }
+        }
+
+        /* Respect reduced-motion preferences */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<h2>Heart Disease Prediction</h2>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">♥</div>
+            <div>Heart<span>Care</span></div>
+        </div>
 
-<form action="/predict" method="post">
-  Age: <input name="age" value="52"><br><br>
-  Sex: <input name="sex" value="1"><br><br>
-  cp: <input name="cp" value="0"><br><br>
-  trestbps: <input name="trestbps" value="125"><br><br>
-  chol: <input name="chol" value="212"><br><br>
-  fbs: <input name="fbs" value="0"><br><br>
-  restecg: <input name="restecg" value="1"><br><br>
-  thalach: <input name="thalach" value="168"><br><br>
-  exang: <input name="exang" value="0"><br><br>
-  oldpeak: <input name="oldpeak" value="1.0"><br><br>
-  slope: <input name="slope" value="2"><br><br>
-  ca: <input name="ca" value="2"><br><br>
-  thal: <input name="thal" value="3"><br><br>
+        <div class="secure-badge">✦ ML-Powered Prediction</div>
+    </nav>
 
-  <button type="submit">Predict</button>
-</form>
+    <header class="hero">
+        <div class="eyebrow">
+            <span class="live-dot"></span>
+            Intelligent Health Analytics
+        </div>
 
-{% if result %}
-  <h3>{{ result }}</h3>
-{% endif %}
+        <h1>Understand Your Heart.<br>
+            <span>Protect Your Future.</span>
+        </h1>
+
+        <p>
+            Enter the required health parameters to generate a prediction
+            using your machine learning model.
+        </p>
+
+        <div class="ecg">
+            <svg viewBox="0 0 340 50" preserveAspectRatio="none"
+                 aria-label="Animated electrocardiogram decoration">
+                <path d="M0 25 H75 L90 25 L105 10 L120 42 L137 2
+                         L153 34 L166 25 H340"/>
+            </svg>
+        </div>
+    </header>
+
+    <main class="main-card">
+
+        <div class="card-header">
+            <div>
+                <h2>Patient Health Assessment</h2>
+                <p>Complete all 13 parameters to run your prediction.</p>
+            </div>
+
+            <div class="step-label">01 / Health Details</div>
+        </div>
+
+        <form action="/predict" method="post" id="predictionForm">
+
+            <div class="section-title">
+                <span>♙</span>
+                Personal Information
+            </div>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="age">Age <small>(years)</small></label>
+                    <input type="number" id="age" name="age"
+                           min="1" max="120" value="52" required>
+                </div>
+
+                <div class="field">
+                    <label for="sex">Sex</label>
+                    <select id="sex" name="sex" required>
+                        <option value="1" selected>Male (1)</option>
+                        <option value="0">Female (0)</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="cp">Chest Pain Type</label>
+                    <select id="cp" name="cp" required>
+                        <option value="0" selected>Type 0</option>
+                        <option value="1">Type 1</option>
+                        <option value="2">Type 2</option>
+                        <option value="3">Type 3</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <hr class="form-divider">
+
+            <div class="section-title">
+                <span>♡</span>
+                Cardiovascular Measurements
+            </div>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="trestbps">
+                        Resting Blood Pressure <small>(mm Hg)</small>
+                    </label>
+                    <input type="number" id="trestbps" name="trestbps"
+                           min="1" max="300" value="125" required>
+                </div>
+
+                <div class="field">
+                    <label for="chol">
+                        Cholesterol <small>(mg/dL)</small>
+                    </label>
+                    <input type="number" id="chol" name="chol"
+                           min="1" max="1000" value="212" required>
+                </div>
+
+                <div class="field">
+                    <label for="fbs">
+                        Fasting Blood Sugar
+                    </label>
+                    <select id="fbs" name="fbs" required>
+                        <option value="0" selected>≤ 120 mg/dL (0)</option>
+                        <option value="1">&gt; 120 mg/dL (1)</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="restecg">Resting ECG</label>
+                    <select id="restecg" name="restecg" required>
+                        <option value="0">Normal (0)</option>
+                        <option value="1" selected>Type 1 (1)</option>
+                        <option value="2">Type 2 (2)</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="thalach">
+                        Maximum Heart Rate <small>(bpm)</small>
+                    </label>
+                    <input type="number" id="thalach" name="thalach"
+                           min="1" max="300" value="168" required>
+                </div>
+
+                <div class="field">
+                    <label for="exang">
+                        Exercise-Induced Angina
+                    </label>
+                    <select id="exang" name="exang" required>
+                        <option value="0" selected>No (0)</option>
+                        <option value="1">Yes (1)</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="oldpeak">
+                        Oldpeak <small>(ST depression)</small>
+                    </label>
+                    <input type="number" id="oldpeak" name="oldpeak"
+                           min="0" max="20" step="0.1"
+                           value="1.0" required>
+                </div>
+
+                <div class="field">
+                    <label for="slope">ST Segment Slope</label>
+                    <select id="slope" name="slope" required>
+                        <option value="0">Type 0</option>
+                        <option value="1">Type 1</option>
+                        <option value="2" selected>Type 2</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="ca">
+                        Major Vessels <small>(0–4)</small>
+                    </label>
+                    <select id="ca" name="ca" required>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="thal">Thal</label>
+                    <select id="thal" name="thal" required>
+                        <option value="1">Type 1</option>
+                        <option value="2">Type 2</option>
+                        <option value="3" selected>Type 3</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span>✦</span>
+                <span id="buttonText">Analyze Health Parameters</span>
+                <span>→</span>
+            </button>
+
+        </form>
+
+        {% if result %}
+        <section class="result" aria-live="polite">
+            <div class="result-heading">✦ Model Prediction Result</div>
+            <h3>{{ result }}</h3>
+        </section>
+        {% endif %}
+
+    </main>
+
+    <p class="disclaimer">
+        ⚕️ Educational and research use only. This machine learning
+        prediction is not a medical diagnosis and cannot confirm or rule
+        out heart disease. Consult a qualified healthcare professional
+        for medical advice. Do not delay urgent medical care based on
+        this tool.
+    </p>
+
+    <footer class="footer">
+        HEARTCARE · MACHINE LEARNING PROJECT · BUILT FOR EDUCATIONAL USE
+    </footer>
+
+    <script>
+        const form = document.getElementById("predictionForm");
+        const submitBtn = document.getElementById("submitBtn");
+        const buttonText = document.getElementById("buttonText");
+
+        form.addEventListener("submit", function () {
+            submitBtn.disabled = true;
+            buttonText.textContent = "Analyzing Parameters...";
+        });
+    </script>
 
 </body>
 </html>
