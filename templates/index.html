@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heart Disease Prediction</title>
+</head>
+<body>
+
+<h2>Heart Disease Prediction</h2>
+
+<form action="/predict" method="post">
+  Age: <input name="age" value="52"><br><br>
+  Sex: <input name="sex" value="1"><br><br>
+  cp: <input name="cp" value="0"><br><br>
+  trestbps: <input name="trestbps" value="125"><br><br>
+  chol: <input name="chol" value="212"><br><br>
+  fbs: <input name="fbs" value="0"><br><br>
+  restecg: <input name="restecg" value="1"><br><br>
+  thalach: <input name="thalach" value="168"><br><br>
+  exang: <input name="exang" value="0"><br><br>
+  oldpeak: <input name="oldpeak" value="1.0"><br><br>
+  slope: <input name="slope" value="2"><br><br>
+  ca: <input name="ca" value="2"><br><br>
+  thal: <input name="thal" value="3"><br><br>
+
+  <button type="submit">Predict</button>
+</form>
+
+{% if result %}
+  <h3>{{ result }}</h3>
+{% endif %}
+
+</body>
+</html>
